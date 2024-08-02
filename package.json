@@ -1,0 +1,23 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.1.2",
+        "axios": "^1.7.3",
+        "laravel-vite-plugin": "^1.0",
+        "vite": "^5.0"
+    },
+    "dependencies": {
+        "@mdi/font": "^7.4.47",
+        "laravel-mix": "^6.0.49",
+        "moment": "^2.30.1",
+        "vite-plugin-vuetify": "^2.0.3",
+        "vue": "^3.4.35",
+        "vuetify": "^3.7.0-beta.1"
+    }
+}
