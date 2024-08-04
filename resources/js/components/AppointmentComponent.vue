@@ -8,6 +8,19 @@
         </v-btn>
       </div>
 
+      <div class="d-flex justify-space-between">
+        <v-col cols="12" sm="4">
+          <h2>Filtre o agendamento por:</h2>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select :items="['B', 'D', 'F', 'C']" v-model="animal_filter" label="O animal é: "
+            required></v-select>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-text-field label="Data" v-model="data_filter" type="text"></v-text-field>
+        </v-col>
+      </div>
+
       <div v-for="appointment in appointments" :key="appointment.id">
         <card :item="appointment"></card>
       </div>
@@ -68,16 +81,35 @@ export default {
       email: '',
       period: '',
       dialog: false,
-      user_id: ''
+      user_id: '',
+      animal_filter: '',
+      data_filter: '',
     };
   },
   mounted() {
     this.getAppointments();
     this.getDoctors();
   },
+  watch: {
+    animal_filter: 'getAppointments' 
+  },
   methods: {
+    buildUrl(baseUrl, params) {
+      const queryParams = new URLSearchParams(params).toString();
+
+      return `${baseUrl}?${queryParams}`;
+    },
     async getAppointments() {
-      const response = await axios.get('/appointment');
+      const search = '/appointment'
+
+      let params = {};
+
+      if (this.animal_filter) 
+        params.tipo = this.animal_filter;  
+
+      const url = this.buildUrl(search, params);
+
+      const response = await axios.get(url);
       this.appointments = response.data;
     },
     async getDoctors() {
