@@ -35,7 +35,26 @@ class UserController extends Controller
         //
         $userValidated = $request->validated();
         $user = $this->userRepository->create($userValidated);
-        return response()->json($user, 201);
+        if ($user) {
+            $credentials = $request->only('email', 'password');
+            $token = auth()->attempt($credentials);
+            if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+            $user = auth()->user();
+            return response()->json([
+                'status' => 'success',
+                'user' => $user,
+                'authorization' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                ]
+            ],201);
+        }
     }
 
     /**

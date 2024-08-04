@@ -8,6 +8,7 @@
      <style>
         .home{
             background-color: whitesmoke;
+            height: 100dvdh;
         }
      </style>
 </head>
