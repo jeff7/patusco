@@ -19,9 +19,15 @@ class AbstractRepository
         return $this->model->all();
     }
 
-    public function with(array $relations): Collection
+    public function with(array $relations, array $filters = []): Collection
     {
-        return $this->model->with($relations)->get();
+        $query = $this->model->with($relations);
+
+        foreach ($filters as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        return $query->get();
     }
 
     public function find(int $id, array $relations = []): ?Model
