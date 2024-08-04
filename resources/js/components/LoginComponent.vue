@@ -41,7 +41,8 @@ export default {
           });
 
           if (response.data.status === 'success') {
-            await localStorage.setItem('user', response.data.user.user_type)
+            await localStorage.setItem('userType', response.data.user.user_type);
+            await localStorage.setItem('user', response.data.authorization.token)
             window.location.href = '/home';
           }
         } catch (error) {

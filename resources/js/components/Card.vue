@@ -129,7 +129,7 @@ export default {
       return moment(this.item.appointment_date).format('HH:mm DD/MM/YYYY');
     },
     allowDelete() {
-      let type = localStorage.getItem('user')
+      let type = localStorage.getItem('userType')
       return type == 'R' ? true : false
     },
 
