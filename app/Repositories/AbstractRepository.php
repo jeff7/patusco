@@ -23,8 +23,11 @@ class AbstractRepository
     {
         $query = $this->model->with($relations);
 
-        foreach ($filters as $column => $value) {
-            $query->where($column, $value);
+        foreach ($filters as $column => $value) {            
+            if ($column == 'appointment_date')
+                $query->whereDate($column, $value);
+            else
+                $query->where($column, $value);
         }
 
         return $query->get();
