@@ -11,8 +11,10 @@ import HomeComponent from "./components/HomeComponent.vue";
 
 const vuetify = createVuetify(); // Cria uma instância do Vuetify
 
-
+let token = await localStorage.getItem("user");
 axios.defaults.baseURL = "http://localhost:8000/api";
+axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+axios.defaults.headers.common["Accept"] = "application/json";
 
 const app = createApp({
     components: {
