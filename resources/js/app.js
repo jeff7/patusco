@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import "vuetify/styles";
 import '@mdi/font/css/materialdesignicons.css'; // Ícones
 import { createVuetify } from "vuetify";
+import VueTheMask from "vue-the-mask";
 
 import axios from "axios";
 import UserComponent from "./components/UserComponent.vue";
@@ -28,6 +29,7 @@ const app = createApp({
 app.config.globalProperties.$axios = axios;
 
 app.use(vuetify);
+app.use(VueTheMask);
 app.component("user-component", UserComponent);
 app.component("appointment-component", AppointmentComponent);
 app.component("login-component", LoginComponent);

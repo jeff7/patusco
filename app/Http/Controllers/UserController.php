@@ -49,6 +49,16 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function getUserDoctors()
+    {
+        //
+        $user = $this->userRepository->findDoctors();
+        return response()->json($user, 200);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
      public function update(UpdateUserRequest $request, $id)
