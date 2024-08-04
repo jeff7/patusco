@@ -13,7 +13,7 @@
           <h2>Filtre o agendamento por:</h2>
         </v-col>
         <v-col cols="12" sm="4">
-          <v-select :items="['B', 'D', 'F', 'C']" v-model="animal_filter" label="O animal é: "
+          <v-select :items="animalTypes" item-title="name" item-value="id" v-model="animal_filter" label="O animal é: "
             required></v-select>
         </v-col>
         <v-col cols="12" sm="4">
@@ -82,8 +82,14 @@ export default {
       period: '',
       dialog: false,
       user_id: '',
-      animal_filter: '',
+      animal_filter: null,
       data_filter: '',
+      animalTypes: [
+        { id: 'B', name: 'Ave' },
+        { id: 'D', name: 'Cachorro' },
+        { id: 'F', name: 'Peixe' },
+        { id: 'C', name: 'Gato' }
+      ],
     };
   },
   mounted() {
@@ -104,7 +110,7 @@ export default {
 
       let params = {};
 
-      if (this.animal_filter) 
+      if (this.animal_filter && this.animal_filter != 'A') 
         params.tipo = this.animal_filter;  
 
       const url = this.buildUrl(search, params);
