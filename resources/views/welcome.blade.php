@@ -13,7 +13,7 @@
 </head>
 <body>
     <div id="app" class="home">
-        <home-component></home-component>
+        <login-component></login-component>
     </div>
     <script type="module" src="http://localhost:5173/resources/js/app.js"></script>
 </body>

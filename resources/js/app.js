@@ -1,16 +1,13 @@
 import { createApp } from "vue";
 import "vuetify/styles";
-import '@mdi/font/css/materialdesignicons.css'; // Ícones
 import { createVuetify } from "vuetify";
 import VueTheMask from "vue-the-mask";
 
 import axios from "axios";
-import UserComponent from "./components/UserComponent.vue";
-import AppointmentComponent from "./components/AppointmentComponent.vue";
-import LoginComponent from "./components/LoginComponent.vue";
-import HomeComponent from "./components/HomeComponent.vue";
+import AppointmentComponent from "./pages/AppointmentComponent.vue";
+import LoginComponent from "./pages/LoginComponent.vue";
 
-const vuetify = createVuetify(); // Cria uma instância do Vuetify
+const vuetify = createVuetify(); 
 
 let token = await localStorage.getItem("user");
 axios.defaults.baseURL = "http://localhost:8000/api";
@@ -19,10 +16,8 @@ axios.defaults.headers.common["Accept"] = "application/json";
 
 const app = createApp({
     components: {
-        UserComponent,
         AppointmentComponent,
         LoginComponent,
-        HomeComponent,
     },
 });
 
@@ -30,8 +25,6 @@ app.config.globalProperties.$axios = axios;
 
 app.use(vuetify);
 app.use(VueTheMask);
-app.component("user-component", UserComponent);
 app.component("appointment-component", AppointmentComponent);
 app.component("login-component", LoginComponent);
-app.component("home-component", HomeComponent);
 app.mount("#app");

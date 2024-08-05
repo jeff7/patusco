@@ -9,6 +9,7 @@
         .home{
             background-color: whitesmoke;
             height: 100dvdh;
+            overflow-y: auto;
         }
      </style>
 </head>
