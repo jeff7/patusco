@@ -1,84 +1,80 @@
 <template>
+
+  <Snackbar 
+    v-model:show="snackbar.visible" 
+    :color="snackbar.color" 
+    :message="snackbar.message">
+  </Snackbar>
+
   <v-card class="my-8 ">
     <v-card-title class="d-flex justify-space-between">
       {{ item.client_name }}
       <span>{{ formatDateTime }} - {{ periodTime }}</span>
     </v-card-title>
-
     <v-card-subtitle>
       <strong>Email: </strong>{{ item.email }}
     </v-card-subtitle>
-
     <v-card-text>
       <p>
-        <strong>Animal:</strong>{{ animalType }}<br>
-        <strong>Nome do animal:</strong>{{ item.animal_name }}<br>
-        <strong>Idade do animal:</strong>{{ item.age }}<br>
+        <strong>Médico: </strong>{{ item.user.name }}<br>
+        <strong>Animal: </strong>{{ animalType }}<br>
+        <strong>Nome do animal: </strong>{{ item.animal_name }}<br>
+        <strong>Idade do animal: </strong>{{ item.age }}<br>
       </p>
       <p>
-        <strong>Sintomas:</strong><br>
+        <strong>Sintomas: </strong><br>
         {{ item.symptoms }}
       </p>
     </v-card-text>
-
     <v-card-actions>
-      <v-btn color="primary" variant="flat" @click="dialog = true">
+      <v-btn 
+        color="primary" 
+        variant="flat" 
+        @click="dialog = true">
         Editar
       </v-btn>
-      <v-btn v-if=" allowDelete" color="error" variant="flat" @click="deleteAppointment(item.id)">
+      <v-btn v-if=" allowDelete" 
+        color="error" 
+        variant="flat" 
+        @click="deleteAppointment(item.id)">
         Excluir
       </v-btn>
     </v-card-actions>
   </v-card>
 
-  <v-dialog v-model="dialog" width="650px" persistent>
-    <v-card title="Novo agendamento">
-      <v-card-text>
-        <v-text-field label="Nome do Cliente" v-model="client_name" type="text" required></v-text-field>
-        <v-text-field label="Email de contato" v-model="email" type="email" required></v-text-field>
-        <v-text-field label="Data do atendimento hh:min dd/mm/yy" v-model="appointment_date" type="text"
-          required></v-text-field>
-        <v-text-field label="Nome do animal" v-model="animal_name" type="text" required></v-text-field>
-        <div class="d-flex justify-space-between">
-          <v-col cols="12" sm="4">
-            <v-select :items="['Cachorro', 'Gato', 'Peixe', 'Ave']" v-model="animal_type" label="O animal é: "
-              required></v-select>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <v-text-field label="Idade do animal" v-model="age" type="number" required></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <v-select :items="['Tarde', 'Manha']" v-model="period" label="Periodo do dia" required></v-select>
-          </v-col>
-        </div>
-        <v-text-field label="Quais os sintomas do animal?" v-model="symptoms" type="text" required></v-text-field>
-        <v-select :items="doctors" v-model="user_id" label="Médico Veterinário" required></v-select>
-      </v-card-text>
-      <template v-slot:actions>
-        <v-btn text="cancelar" color="error" variant="flat" @click="dialog = false"></v-btn>
-        <v-btn text="Atualizar" color="primary" variant="flat" @click="updateAppointment"></v-btn>
-      </template>
-    </v-card>
-  </v-dialog>
+  <AppointmentModal 
+    :isUpdate="true" 
+    v-model:show="dialog" 
+    :item="item" 
+    :reload="reload">
+  </AppointmentModal>
 
 </template>
 
 <script>
 import axios from 'axios';
 import moment from 'moment'
+import Snackbar from '../components/Snackbar.vue'
+import AppointmentModal from './modals/AppointmentModal.vue'
 
 export default {
   name: 'Card',
+  components: {
+    Snackbar,
+    AppointmentModal
+  },
   props: {
     item: {
       type: Object,
+      required: true
+    },
+    reload: {
+      type: Function,
       required: true
     }
   },
   data() {
     return {
-      appointments: [],
-      doctors: [],
       id: this.item.id,
       client_name: this.item.client_name,
       animal_name: this.item.animal_name,
@@ -89,44 +85,60 @@ export default {
       email: this.item.email,
       period: this.item.period,
       dialog: false,
-      user_id: 1
+      isReadonly: true,
+      user_id: this.item.user.id,
+      animalTypes: [
+        { id: 'B', name: 'Ave' },
+        { id: 'D', name: 'Cachorro' },
+        { id: 'F', name: 'Peixe' },
+        { id: 'C', name: 'Gato' },
+        { id: 'A', name: 'Todos' }
+      ],
+      periodTypes: [
+        { id: 'T', name: 'Tarde' },
+        { id: 'M', name: 'Manha' },
+      ],
+      snackbar: {
+        visible: false,
+        message: '',
+        color: ''
+      },
     };
   },
   
   methods: {
-    async deleteAppointment(id) {
-      await axios.delete(`/appointment/${id}`);
+    showSnackbar(message, result) {
+      this.snackbar.visible = true;
+      this.snackbar.message = message;
+      this.snackbar.color = result;
     },
-    async updateAppointment() {
-      const response = await axios.put(`/appointment/${this.id}`, {
-        client_name: this.client_name,
-        animal_name: this.animal_name,
-        animal_type: this.animal_type,
-        age: this.age,
-        symptoms: this.symptoms,
-        appointment_date: this.appointment_date,
-        email: this.email,
-        period: this.period,
-        user_id: 1
-      });
-      this.appointments.push(response.data);
+    async deleteAppointment(id) {
+      await axios.delete(`/appointment/${id}`)
+        .then(
+          async () => {
+            this.dialog = false;
+            await this.reload();
+            this.showSnackbar('Agendamento deletado com sucesso!!', 'success')
+          })
+        .catch(
+          async () => {
+            this.dialog = false;
+            await this.reload();
+            this.showSnackbar('Agendamento não deletado!!', 'error')
+          }
+        );
     },
   },
   computed: {
     periodTime() {
       return this.item.period == 'M' ? 'Manhã' : 'Tarde';
     },
-    animalType() {
-      const animalTypes = {
-        C: 'Gato',
-        D: 'Cachorro',
-        F: 'Peixe',
-        B: 'Ave',
-      } 
-      return animalTypes[this.item.animal_type];
-    },
     formatDateTime() {
       return moment(this.item.appointment_date).format('HH:mm DD/MM/YYYY');
+    },
+    animalType() {
+      let animal = this.animalTypes.find(item => item.id === this.animal_type);
+      return animal ? animal.name : null;
     },
     allowDelete() {
       let type = localStorage.getItem('userType')
