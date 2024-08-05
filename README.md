@@ -29,15 +29,24 @@ Pra facilitar o projeto, coloquei um banco MySql e Redis, em um docker.Para roda
 
 - docker-compose up -d
 
-## (opcional) Migrations
+## Migrations
 
-Criei Seeds para criar alguns usuarios e agendamentos. Essas Seeds tambem criam dois usuarios default.
+Execute as migrations:
+
+- php artisan migrate
+
+Criei Seeds para criar alguns usuarios e agendamentos. 
+Essas Seeds tambem criam dois usuarios default.
 
 email: jeff@recepcionista.com senha: 12345678
 email: jeff@doctor.com senha: 12345678
 
 Cada um é de um tipo de usuario e pode ser usado para acessar o sistema.
 A seed tb cria um primeiro agendamento, todavia é possivel criar e logar no sistema via tela
+
+Se quiser rodar os seeds execute:
+
+- php artisan db:seed
 
 
 ### Executando o projeto
