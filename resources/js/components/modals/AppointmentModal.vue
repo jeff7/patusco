@@ -77,6 +77,7 @@
             required>
           </v-text-field>
           <v-select 
+            v-if="isRecepcionist"
             :items="doctors" 
             item-title="name" 
             item-value="id" 
@@ -147,6 +148,10 @@ export default {
     },
     isUpdateButtonLabel() {
       return this.isUpdate ? "Atualizar" : "Agendar"
+    },
+    isRecepcionist() {
+      let type = localStorage.getItem('userType')
+      return type == 'R' ? true : false
     },
   },
   mounted() {
